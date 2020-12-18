@@ -18,8 +18,8 @@
 (function() {
 	'use strict';
 
-    // -----------------------
-    //  SceneManager
+	// -----------------------
+	//  SceneManager
 	// -----------------------
 	
 	var _SceneManager_run = SceneManager.run;
