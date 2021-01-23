@@ -287,9 +287,9 @@ var Journal = Journal || {};
 	// -----------
 	//  Game_Interpreter
 
-	const _Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+	Game_Interpreter.prototype.maowjournal_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 	Game_Interpreter.prototype.pluginCommand = function(command, args) {
-		_Game_Interpreter_pluginCommand.call(command, args);
+		if (!(command)) return;
 		args = getArgs(args);
 		if (command.toLowerCase() === 'journal' && args.length > 0) {
 			switch(args[0]) {
@@ -307,6 +307,8 @@ var Journal = Journal || {};
 					}
 					break;
 			}
+		} else {
+			this.maowjournal_pluginCommand(command, args);
 		}
 	}
 
