@@ -53,7 +53,7 @@ var Journal = Journal || {};
 	const param_wrapLength = Number(params['wrapLength']);
 	const param_scrollSpeed = Number(params['scrollSpeed']);
 
-	const entries = {};
+	let entries;
 	let currentEntry = undefined;
 
 	function openJournal() {
@@ -287,8 +287,9 @@ var Journal = Journal || {};
 	// -----------
 	//  Game_Interpreter
 
-	Game_Interpreter.prototype.maowjournal_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+	const _Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 	Game_Interpreter.prototype.pluginCommand = function(command, args) {
+		_Game_Interpreter_pluginCommand.call(this, command, args);
 		if (!(command)) return;
 		args = getArgs(args);
 		if (command.toLowerCase() === 'journal' && args.length > 0) {
@@ -307,11 +308,31 @@ var Journal = Journal || {};
 					}
 					break;
 			}
-		} else {
-			this.maowjournal_pluginCommand(command, args);
 		}
 	}
 
+	// -----------
+	//  DataManager
+
+	const _DataManager_createGameObjects = DataManager.createGameObjects;
+	DataManager.createGameObjects = function() {
+		_DataManager_createGameObjects.call(this);
+		entries = {};
+	}
+
+	const _DataManager_makeSaveContents = DataManager.makeSaveContents;
+	DataManager.makeSaveContents = function() {
+		const contents = _DataManager_makeSaveContents.call(this);
+		contents.journalEntries = entries;
+		return contents;
+	}
+
+	const _DataManager_extractSaveContents = DataManager.extractSaveContents;
+	DataManager.extractSaveContents = function(contents) {
+		_DataManager_extractSaveContents.call(this, contents);
+		if (contents.journalEntries) entries = contents.journalEntries;
+	}
+	
 	// -----------------------
 	//  Utils
 	// -----------------------
